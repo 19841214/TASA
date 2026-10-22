@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國家太空中心 (TASA) 航太工程 × 職場英文 6 大互動模擬沙盒</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-space: #0b0e14;
+      --neon-blue: #00d2ff;
+      --amber-gold: #ffb703;
+      --emerald-ok: #10b981;
+      --rose-err: #f43f5e;
+    }
+    body {
+      background-color: var(--bg-space);
+      background-image: 
+        radial-gradient(circle at 12% 18%, rgba(0, 210, 255, 0.09) 0%, transparent 38%),
+        radial-gradient(circle at 88% 82%, rgba(255, 183, 3, 0.08) 0%, transparent 40%),
+        linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      color: #f1f5f9;
+      font-family: 'Noto Sans TC', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .hud-panel {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .hud-gold {
+      background: rgba(20, 25, 38, 0.88);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 183, 3, 0.45);
+      box-shadow: 0 10px 35px rgba(255, 183, 3, 0.14);
+    }
+    /* 太空認證金色印章動畫 */
+    @keyframes stampSlam {
+      0% { transform: scale(2.8) rotate(-18deg); opacity: 0; }
+      60% { transform: scale(0.92) rotate(-8deg); opacity: 1; }
+      80% { transform: scale(1.04) rotate(-10deg); }
+      100% { transform: scale(1) rotate(-10deg); opacity: 1; }
+    }
+    .stamp-animate {
+      animation: stampSlam 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    /* 自訂滑桿樣式 */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #1e293b;
+      height: 8px;
+      border-radius: 999px;
+      outline: none;
+      border: 1px solid rgba(0, 210, 255, 0.35);
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--neon-blue);
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0, 210, 255, 0.85);
+      border: 2px solid #ffffff;
+    }
+    .vocab-card {
+      transition: all 0.2s ease;
+    }
+    .vocab-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--amber-gold);
+      background: rgba(255, 183, 3, 0.08);
+    }
+  </style>
+</head>
+<body class="py-4 px-3 sm:px-6 lg:px-8">
+
+  <!-- 頂部 HUD 導覽列 -->
+  <header class="max-w-7xl mx-auto mb-5">
+    <div class="hud-panel rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-xl bg-cyan-500/15 border border-cyan-400/50 flex items-center justify-center text-cyan-400 shrink-0 shadow-lg shadow-cyan-500/20">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-mono-tech uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30">
+              STEPHANIE'S ENGLISH LAB × TASA EE SANDBOX
+            </span>
+            <span class="text-xs font-mono-tech text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+              指導：謝政倫老師 × 欉珊慈老師 (Tr. Stephanie)｜電機科高二專業與職場英文
+            </span>
+          </div>
+          <h1 class="text-lg sm:text-2xl font-black text-white tracking-tight mt-1">
+            國家太空中心 (TASA) 航太電機 6 大物理沙盒 × 《從晶片到衛星》職場英文實戰
+          </h1>
+        </div>
+      </div>
+
+      <!-- 進度徽章、音效與跳轉 GAS 測驗按鈕 -->
+      <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
+        <div class="bg-slate-900/90 border border-slate-700 rounded-xl px-3 py-2 flex items-center gap-2 text-xs">
+          <span class="text-slate-400">模擬進度：</span>
+          <span id="missionProgressText" class="font-mono-tech font-bold text-cyan-300">0 / 6 模組過關</span>
+        </div>
+
+        <button onclick="toggleAudio()" class="bg-slate-900/90 hover:bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 flex items-center gap-1.5 transition">
+          <span id="audioIcon">🔊</span>
+          <span>音效</span>
+        </button>
+
+        <a id="gasQuizLinkTop" href="https://script.google.com/macros/s/AKfycbyIh8PNKPz4ARSMVk8EVoHxCn_O4RH8r3XboytHwQFgoFP8F0bUiyRMZNMg5x7H0ziS/exec" target="_blank" rel="noopener noreferrer"
+           onclick="playSound('fanfare')"
+           class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-xs sm:text-sm border border-amber-300 shadow-lg shadow-amber-500/25 flex items-center gap-1.5 transition">
+          <span>🚀 前往 50 題測驗與領取研習證書</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 6 大模擬模組切換頁籤 -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-3" id="moduleTabs">
+      <button onclick="switchModule(0)" id="tabBtn0" class="tab-btn p-2.5 rounded-xl border text-left transition flex flex-col justify-between bg-cyan-500/20 border-cyan-400 text-white">
+        <div class="flex items-center justify-between text-[11px] font-mono-tech text-cyan-300">
+          <span>MOD 01 [S,T,U,V,W]</span>
+          <span id="tabStatus0">⏳</span>
+        </div>
+        <div class="font-bold text-xs sm:text-sm mt-1">1. 無重力太空舵手</div>
+        <div class="text-[11px] text-slate-400 truncate">AOCS Attitude Control</div>
+      </button>
+
+      <button onclick="switchModule(1)" id="tabBtn1" class="tab-btn p-2.5 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-600">
+        <div class="flex items-center justify-between text-[11px] font-mono-tech text-slate-400">
+          <span>MOD 02 [M,N,O,Q,P]</span>
+          <span id="tabStatus1">⏳</span>
+        </div>
+        <div class="font-bold text-xs sm:text-sm mt-1">2. 整測廠房試煉場</div>
+        <div class="text-[11px] text-slate-400 truncate">I&T Environmental Test</div>
+      </button>
+
+      <button onclick="switchModule(2)" id="tabBtn2" class="tab-btn p-2.5 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-600">
+        <div class="flex items-center justify-between text-[11px] font-mono-tech text-slate-400">
+          <span>MOD 03 [Y,Z,AA,BB]</span>
+          <span id="tabStatus2">⏳</span>
+        </div>
+        <div class="font-bold text-xs sm:text-sm mt-1">3. 軌道冷熱防護盾</div>
+        <div class="text-[11px] text-slate-400 truncate">TCS Thermal Control</div>
+      </button>
+
+      <button onclick="switchModule(3)" id="tabBtn3" class="tab-btn p-2.5 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-600">
+        <div class="flex items-center justify-between text-[11px] font-mono-tech text-slate-400">
+          <span>MOD 04 [E,H,L]</span>
+          <span id="tabStatus3">⏳</span>
+        </div>
+        <div class="font-bold text-xs sm:text-sm mt-1">4. 太空鷹眼解析度</div>
+        <div class="text-[11px] text-slate-400 truncate">Optical Remote Sensing</div>
+      </button>
+
+      <button onclick="switchModule(4)" id="tabBtn4" class="tab-btn p-2.5 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-600">
+        <div class="flex items-center justify-between text-[11px] font-mono-tech text-slate-400">
+          <span>MOD 05 [D,F,X]</span>
+          <span id="tabStatus4">⏳</span>
+        </div>
+        <div class="font-bold text-xs sm:text-sm mt-1">5. 隱形大氣溫度計</div>
+        <div class="text-[11px] text-slate-400 truncate">GNSS Radio Occultation</div>
+      </button>
+
+      <button onclick="switchModule(5)" id="tabBtn5" class="tab-btn p-2.5 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-600">
+        <div class="flex items-center justify-between text-[11px] font-mono-tech text-slate-400">
+          <span>MOD 06 [K,R,A,B,C]</span>
+          <span id="tabStatus5">⏳</span>
+        </div>
+        <div class="font-bold text-xs sm:text-sm mt-1">6. 太空雙通道通訊</div>
+        <div class="text-[11px] text-slate-400 truncate">S/X-Band Ground Pass</div>
+      </button>
+    </div>
+  </header>
+
+  <!-- 主內容區：左側互動物理模擬器 (7欄) + 右側國際航太職場英文特訓區 (5欄) -->
+  <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 pb-16">
+
+    <!-- 左側：物理模擬與白話破題區 -->
+    <div class="lg:col-span-7 space-y-4">
+
+      <!-- 門外漢白話破題卡 (Layman Analogy Card) -->
+      <div class="hud-panel rounded-2xl p-4 sm:p-5 border-l-4 border-l-amber-400">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+          <span id="modCodeBadge" class="text-xs font-mono-tech font-bold px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40">
+            對齊學習單代碼：S, T, U, V, W
+          </span>
+          <span id="modPainBadge" class="text-xs font-mono-tech px-2.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse">
+            ⚠️ 初始狀態：失控翻滾中 (Tumbling Alert)
+          </span>
+        </div>
+        <h2 id="modTitle" class="text-lg sm:text-xl font-black text-white mb-1">
+          模組 1：【無重力太空舵手 - AOCS 姿態控制】
+        </h2>
+        <p id="modAnalogyText" class="text-xs sm:text-sm text-slate-200 leading-relaxed bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+          💡 <strong>外行人秒懂比喻：</strong>想像你坐在 360 度電腦旋轉椅上雙腳懸空，手裡拿著旋轉的啞鈴（<strong>反作用輪 W</strong>）往順時針轉，你的身體就會自動往逆時針煞車轉向！再打開電磁鐵（<strong>磁力棒 U</strong>）借地球磁場推力微調，完全不耗一滴燃料！
+        </p>
+      </div>
+
+      <!-- ==================== 模組 01：AOCS 姿態控制 ==================== -->
+      <section id="simPanel0" class="hud-panel rounded-2xl p-4 sm:p-5 space-y-4">
+        <div class="relative rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+          <canvas id="canvasMod0" class="w-full h-64 sm:h-72 block"></canvas>
+          <div id="hudOverlayMod0" class="absolute top-3 left-3 right-3 flex justify-between items-start pointer-events-none">
+            <div class="bg-slate-950/85 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono-tech space-y-0.5">
+              <div>SPIN RATE: <span id="aocsSpinVal" class="text-rose-400 font-bold">+45.0 °/s (失控)</span></div>
+              <div>ATTITUDE ERROR: <span id="aocsAngleErr" class="text-amber-300 font-bold">128°</span></div>
+              <div>SOLAR POWER: <span id="aocsSolarVal" class="text-slate-400">12% (未對準陽光)</span></div>
+            </div>
+            <div id="aocsSuccessBanner" class="hidden bg-emerald-500/90 text-slate-950 font-black text-xs px-3 py-1.5 rounded-lg shadow-lg">
+              ✓ 姿態鎖定成功！太陽能板最大化充電！
+            </div>
+          </div>
+        </div>
+
+        <!-- 操控面板 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+          <div>
+            <div class="flex justify-between text-xs mb-1.5">
+              <span class="font-bold text-cyan-300">1. 反作用輪轉速 (Reaction Wheel W)</span>
+              <span id="rwRpmLabel" class="font-mono-tech text-amber-300">0 RPM (目標: -4500 RPM)</span>
+            </div>
+            <input id="rwSlider" type="range" min="-6000" max="2000" step="250" value="0" oninput="updateMod0()" class="w-full">
+            <p class="text-[11px] text-slate-400 mt-1">請將滑桿拉至約 <strong class="text-white">-4500 RPM</strong> 產生反向角動量抵銷翻滾！</p>
+          </div>
+
+          <div class="flex flex-col justify-between gap-2">
+            <div class="text-xs font-bold text-cyan-300">2. 磁力棒與感測器協同 (U / V / S)</div>
+            <div class="flex gap-2">
+              <button id="mtqToggleBtn" onclick="toggleMagnetorquer()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs font-bold transition">
+                🧲 啟動磁力棒 (U)：關閉
+              </button>
+              <button onclick="resetMod0()" class="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-800 text-xs text-slate-400">
+                重置失控
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-400">當轉速接近 0 時，開啟磁力棒 (U) 讓星象儀 (V) 與太陽感測器 (S) 鎖定目標！</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 模組 02：整測廠房極限試煉場 ==================== -->
+      <section id="simPanel1" class="hidden hud-panel rounded-2xl p-4 sm:p-5 space-y-4 relative overflow-hidden">
+        <!-- 金色認證印章疊加層 -->
+        <div id="itStampOverlay" class="hidden absolute inset-0 bg-slate-950/75 z-20 flex flex-col items-center justify-center p-6 text-center pointer-events-none">
+          <div class="stamp-animate border-4 border-amber-400 rounded-2xl px-8 py-4 bg-amber-500/20 shadow-2xl shadow-amber-500/40">
+            <div class="text-xs font-mono-tech tracking-widest text-amber-200">TAIWAN SPACE AGENCY • I&T FACILITY</div>
+            <div class="text-3xl sm:text-4xl font-black text-amber-300 tracking-wider my-1">SPACE QUALIFIED</div>
+            <div class="text-sm font-bold text-white">五大極限環境試煉 100% 認證通過</div>
+          </div>
+          <button onclick="document.getElementById('itStampOverlay').classList.add('hidden')" class="mt-4 pointer-events-auto px-4 py-1.5 rounded-lg bg-slate-800 text-xs text-slate-300 border border-slate-600">
+            關閉印章檢視數據
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between bg-slate-900/90 px-4 py-2.5 rounded-xl border border-slate-800">
+          <span class="text-xs sm:text-sm font-bold text-white">點擊或拖曳衛星依序完成 5 大測試艙驗證：</span>
+          <span id="itPassCount" class="font-mono-tech text-xs px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
+            已通過：0 / 5 艙房
+          </span>
+        </div>
+
+        <!-- 5 大測試艙互動卡片 -->
+        <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5" id="itChamberGrid">
+          <button onclick="selectITChamber(0)" id="itBtn0" class="p-3 rounded-xl border border-cyan-400 bg-cyan-500/15 text-left transition">
+            <div class="text-xs font-mono-tech text-cyan-300 flex justify-between"><span>[代碼 M]</span><span id="itChk0">⬜</span></div>
+            <div class="font-bold text-sm mt-1">1. 音震艙</div>
+            <div class="text-[11px] text-slate-400">Acoustic 140dB</div>
+          </button>
+          <button onclick="selectITChamber(1)" id="itBtn1" class="p-3 rounded-xl border border-slate-800 bg-slate-900/90 text-left transition">
+            <div class="text-xs font-mono-tech text-slate-400 flex justify-between"><span>[代碼 N]</span><span id="itChk1">⬜</span></div>
+            <div class="font-bold text-sm mt-1">2. 振動台</div>
+            <div class="text-[11px] text-slate-400">Vibration Shaker</div>
+          </button>
+          <button onclick="selectITChamber(2)" id="itBtn2" class="p-3 rounded-xl border border-slate-800 bg-slate-900/90 text-left transition">
+            <div class="text-xs font-mono-tech text-slate-400 flex justify-between"><span>[代碼 O]</span><span id="itChk2">⬜</span></div>
+            <div class="font-bold text-sm mt-1">3. 熱真空艙</div>
+            <div class="text-[11px] text-slate-400">TVAC ±100°C</div>
+          </button>
+          <button onclick="selectITChamber(3)" id="itBtn3" class="p-3 rounded-xl border border-slate-800 bg-slate-900/90 text-left transition">
+            <div class="text-xs font-mono-tech text-slate-400 flex justify-between"><span>[代碼 Q]</span><span id="itChk3">⬜</span></div>
+            <div class="font-bold text-sm mt-1">4. 電磁暗室</div>
+            <div class="text-[11px] text-slate-400">EMI/EMC Anechoic</div>
+          </button>
+          <button onclick="selectITChamber(4)" id="itBtn4" class="p-3 rounded-xl border border-slate-800 bg-slate-900/90 text-left transition">
+            <div class="text-xs font-mono-tech text-slate-400 flex justify-between"><span>[代碼 P]</span><span id="itChk4">⬜</span></div>
+            <div class="font-bold text-sm mt-1">5. 質量量測</div>
+            <div class="text-[11px] text-slate-400">Center of Gravity</div>
+          </button>
+        </div>
+
+        <!-- 當前測試艙動態操作區 -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span id="itActiveCode" class="text-xs font-mono-tech text-amber-400 font-bold">[代碼 M] Acoustic Chamber</span>
+              <h3 id="itActiveTitle" class="text-base font-bold text-white">音震測試艙：模擬火箭點火 140dB 毀滅級聲浪</h3>
+            </div>
+            <span id="itActiveStatus" class="text-xs font-mono-tech px-2.5 py-1 rounded bg-slate-800 text-slate-300">待施測</span>
+          </div>
+          <p id="itActiveDesc" class="text-xs text-slate-300 leading-relaxed">
+            請拉動下方滑桿將高壓氮氣喇叭聲壓拉升至 <strong>140 dB</strong>，檢驗太陽能板與蜂巢結構是否會被火箭起飛聲浪震碎！
+          </p>
+          <div class="flex items-center gap-4 pt-1">
+            <input id="itTestSlider" type="range" min="0" max="100" value="0" oninput="handleITSlider(this.value)" class="flex-1">
+            <span id="itSliderReadout" class="font-mono-tech text-sm font-bold text-cyan-300 w-36 text-right">80 dB</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 模組 03：軌道冷熱防護盾 TCS ==================== -->
+      <section id="simPanel2" class="hidden hud-panel rounded-2xl p-4 sm:p-5 space-y-4">
+        <div class="relative rounded-xl overflow-hidden border border-slate-700 bg-slate-950 p-4">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- 軌道日夜環境指示 -->
+            <div class="flex-1 space-y-2 w-full">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-cyan-300">繞地 100 分鐘時間軸 (代碼 BB 冷熱循環)：</span>
+                <span id="tcsOrbitZone" class="font-mono-tech font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">☀️ 向陽面 Sunlight (+120°C)</span>
+              </div>
+              <input id="tcsOrbitSlider" type="range" min="0" max="100" value="20" oninput="updateMod2()" class="w-full">
+              <div class="flex justify-between text-[11px] text-slate-400 font-mono-tech">
+                <span>0 min (向陽酷熱)</span>
+                <span>50 min (進入地影)</span>
+                <span>100 min (極寒蝕區 -110°C)</span>
+              </div>
+            </div>
+
+            <!-- 衛星核心溫度計 -->
+            <div class="w-full sm:w-52 bg-slate-900 border border-slate-700 rounded-xl p-3 text-center shrink-0">
+              <div class="text-[11px] text-slate-400">衛星內部核心溫度 (目標 -10~+25°C)</div>
+              <div id="tcsInternalTemp" class="text-2xl font-mono-tech font-black text-rose-400 my-1">+82.0 °C</div>
+              <div id="tcsSafetyBadge" class="text-[11px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300">
+                🔥 過熱警報 Overheating!
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 大熱控裝備開關 -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-4">
+            <button id="tcsBtnMLI" onclick="toggleTCSGear('mli')" class="p-3 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-left transition">
+              <div class="text-xs font-mono-tech text-amber-300">[代碼 Y] MLI Blanket</div>
+              <div class="font-bold text-sm mt-0.5">多層絕熱金箔衣：未包覆</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">阻絕外部太陽暴曬與鎖溫</div>
+            </button>
+            <button id="tcsBtnRad" onclick="toggleTCSGear('rad')" class="p-3 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-left transition">
+              <div class="text-xs font-mono-tech text-cyan-300">[代碼 AA] Radiator</div>
+              <div class="font-bold text-sm mt-0.5">輻射散熱片：關閉</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">向陽運作時排出內部廢熱</div>
+            </button>
+            <button id="tcsBtnHeat" onclick="toggleTCSGear('heater')" class="p-3 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-left transition">
+              <div class="text-xs font-mono-tech text-rose-300">[代碼 Z] Electric Heater</div>
+              <div class="font-bold text-sm mt-0.5">主動電加熱器：關閉</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">地影蝕區(-110°C)時通電保暖</div>
+            </button>
+          </div>
+
+          <div class="mt-3 text-xs text-slate-300 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+            <span>通關條件：請分別在<strong>「☀️ 向陽面 (0~50分)」</strong>與<strong>「🌑 背陽地影面 (55~100分)」</strong>將溫度控制在安全綠色區間！</span>
+            <span id="tcsStageProgress" class="font-mono-tech text-cyan-300 shrink-0 ml-2">向陽:⬜ 地影:⬜</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 模組 04：太空鷹眼解析度比對 (福衛五號) ==================== -->
+      <section id="simPanel3" class="hidden hud-panel rounded-2xl p-4 sm:p-5 space-y-4">
+        <div class="relative rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+          <canvas id="canvasMod3" class="w-full h-64 sm:h-72 block"></canvas>
+          <div class="absolute top-3 left-3 bg-slate-950/85 border border-cyan-400/50 rounded-lg px-2.5 py-1 text-xs font-mono-tech text-cyan-300">
+            ◀ 左側：黑白全色態 2米 (Panchromatic, 代碼 L)
+          </div>
+          <div class="absolute top-3 right-3 bg-slate-950/85 border border-amber-400/50 rounded-lg px-2.5 py-1 text-xs font-mono-tech text-amber-300">
+            右側：彩色多光譜 4米 (Multispectral, 代碼 H) ▶
+          </div>
+        </div>
+
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-cyan-300">左右拉動光學對比滑桿（720 km 軌道俯瞰校園操場與車隊）：</span>
+            <span id="optSliderValText" class="font-mono-tech text-amber-300">對比分割線：50%</span>
+          </div>
+          <input id="optSplitSlider" type="range" min="5" max="95" value="50" oninput="updateMod3()" class="w-full">
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <p class="text-xs text-slate-300">
+              觀察左側 <strong>2m 黑白 (L)</strong> 可清楚數出跑道標線與禮堂車隊；右側 <strong>4m 彩色 (H)</strong> 則能分辨綠地與紅土色彩！
+            </p>
+            <button id="panSharpenBtn" onclick="triggerPanSharpen()" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-cyan-500/20">
+              ✨ 執行 Pan-Sharpening 影像融合驗證
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 模組 05：隱形大氣溫度計 (福衛七號掩星觀測) ==================== -->
+      <section id="simPanel4" class="hidden hud-panel rounded-2xl p-4 sm:p-5 space-y-4">
+        <div class="relative rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+          <canvas id="canvasMod4" class="w-full h-64 sm:h-72 block"></canvas>
+          <div class="absolute top-3 left-3 bg-slate-950/85 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono-tech space-y-0.5">
+            <div>GNSS 訊號彎曲角 (Bending Angle α): <span id="roBendVal" class="text-cyan-300 font-bold">0.00°</span></div>
+            <div>反演颱風對流層水氣: <span id="roHumidVal" class="text-amber-300 font-bold">待發射電波</span></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="text-xs font-bold text-cyan-300">調整地球大氣層水氣與颱風密度，並點擊發射 GNSS 掩星電波：</div>
+              <div class="text-[11px] text-slate-400">空氣越濃、水氣越多，電波穿過大氣層時就像「水杯裡的筷子」折射彎曲越大！</div>
+            </div>
+            <button onclick="fireROBeam()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 transition shadow-lg shadow-amber-500/20">
+              📡 發射 GNSS 掩星訊號並由 TGRS (X) 反演
+            </button>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-slate-300 shrink-0">大氣水氣密度：</span>
+            <input id="roDensitySlider" type="range" min="1" max="100" value="65" oninput="updateMod4Preview()" class="flex-1">
+            <span id="roDensityLabel" class="font-mono-tech text-xs text-amber-300 w-28 text-right">強烈颱風水氣 (65%)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 模組 06：太空雙通道通訊 (S/X 頻段過境窗口) ==================== -->
+      <section id="simPanel5" class="hidden hud-panel rounded-2xl p-4 sm:p-5 space-y-4">
+        <div class="relative rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+          <canvas id="canvasMod5" class="w-full h-60 sm:h-64 block"></canvas>
+          <div class="absolute top-3 left-3 right-3 flex justify-between items-center pointer-events-none">
+            <div class="bg-slate-950/90 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono-tech">
+              過境倒數 (PASS WINDOW): <span id="commTimerText" class="text-amber-300 font-bold">10:00</span>
+            </div>
+            <div class="bg-slate-950/90 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono-tech">
+              目前頻段: <span id="commBandBadge" class="text-cyan-300 font-bold">STANDBY</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-3">
+          <!-- 兩階段進度條 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-bold text-cyan-300">步驟 1：S 頻段指令與遙傳 [代碼 K,A,B]</span>
+                <span id="sBandPct" class="font-mono-tech text-cyan-300">0%</span>
+              </div>
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="sBandBar" class="h-full bg-cyan-400 transition-all duration-200" style="width:0%"></div>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-1">廣角穩定對講機：傳送心跳 Telemetry 與拍照指令 Telecommand</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-bold text-amber-300">步驟 2：X 頻段高清影像下傳 [代碼 R,C]</span>
+                <span id="xBandPct" class="font-mono-tech text-amber-300">0%</span>
+              </div>
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="xBandBar" class="h-full bg-amber-400 transition-all duration-200" style="width:0%"></div>
+              </div>
+              <div class="text-[11px] text-slate-400">超高速 5G 光纖：需先完成 S 頻段鎖定，再高速下載 40GB 遙測影像</div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2.5 pt-1">
+            <button onclick="switchCommBand('S')" id="btnBandS" class="flex-1 py-2.5 px-3 rounded-xl border border-cyan-400 bg-cyan-500/20 hover:bg-cyan-500/30 text-xs font-bold text-cyan-200 transition">
+              📻 切換 S-Band (代碼 K)：上傳指令 / 健檢遙傳
+            </button>
+            <button onclick="switchCommBand('X')" id="btnBandX" class="flex-1 py-2.5 px-3 rounded-xl border border-amber-400 bg-amber-500/20 hover:bg-amber-500/30 text-xs font-bold text-amber-200 transition">
+              ⚡ 切換 X-Band (代碼 R)：高速下載 4K 衛星影像
+            </button>
+            <button onclick="resetMod5()" class="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-950 text-xs text-slate-400">
+              重新過境
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 右側：航太職場英文特訓中心 (ESP Workplace English Hub) -->
+    <div class="lg:col-span-5 space-y-4">
+
+      <!-- 1. 職場英文關鍵術語發音卡 (點擊真人發音) -->
+      <div class="hud-gold rounded-2xl p-4 sm:p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <span class="text-[11px] font-mono-tech uppercase tracking-wider text-amber-300 block">
+              AEROSPACE ESP VOCABULARY • CLICK TO LISTEN
+            </span>
+            <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+              <span>🎧 國際航太職場英文必備術語</span>
+            </h3>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono-tech">
+            點擊發音 🔊
+          </span>
+        </div>
+
+        <div id="vocabListContainer" class="space-y-2.5"></div>
+      </div>
+      <!-- 2. 跨國工程會議實戰簡報金句 + 參訪導覽員提問句 (Ask the Guide & Space Idioms) -->
+      <div class="hud-panel rounded-2xl p-4 sm:p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-mono-tech text-cyan-300 font-bold">💬 HANDBOOK SAY IT & ASK THE GUIDE (手冊口說與參訪提問句)</span>
+          <button onclick="speakCurrentBriefing()" class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 border border-cyan-400/40 transition">
+            🔊 朗讀英文句
+          </button>
+        </div>
+        <div id="briefingEnText" class="text-sm font-mono-tech text-white bg-slate-950 p-3.5 rounded-xl border border-slate-800 leading-relaxed"></div>
+        <div id="briefingZhText" class="text-xs text-slate-300 leading-relaxed"></div>
+        <div id="handbookJobBadge" class="text-xs font-mono-tech px-3 py-2 rounded-xl bg-amber-500/10 border border-amber-400/30 text-amber-200"></div>
+      </div>
+
+      <!-- 3. 職場英文情境微任務 (Workplace English Mini-Check) -->
+      <div class="hud-panel rounded-2xl p-4 sm:p-5 border border-cyan-400/40">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-mono-tech text-amber-300 font-bold">🎯 WORKPLACE ENGLISH MINI-CHECK (職場英文情境微任務)</span>
+          <span id="engCheckBadge" class="text-xs font-mono-tech px-2 py-0.5 rounded bg-slate-800 text-slate-400">待完成</span>
+        </div>
+        <p id="engCheckPrompt" class="text-xs sm:text-sm text-slate-100 font-medium leading-relaxed mb-3"></p>
+        <div id="engCheckOptions" class="grid grid-cols-1 gap-2"></div>
+        <div id="engCheckFeedback" class="hidden mt-3 text-xs p-2.5 rounded-lg border"></div>
+      </div>
+
+      <!-- 4. 前往 GAS 50 題精熟測驗與領證直通卡 -->
+      <div class="hud-gold rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div>
+          <div class="text-xs font-mono-tech text-amber-300 font-bold">READY FOR CERTIFICATION?</div>
+          <div class="text-sm font-bold text-white">完成模擬與職場英文預習後，立即挑戰 50 題精熟認證！</div>
+        </div>
+        <a href="https://script.google.com/macros/s/AKfycbyIh8PNKPz4ARSMVk8EVoHxCn_O4RH8r3XboytHwQFgoFP8F0bUiyRMZNMg5x7H0ziS/exec" target="_blank" rel="noopener noreferrer"
+           class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shrink-0 transition">
+          🏆 進入 50 題測驗領證 →
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    /**
+     * ============================================================================
+     * 1. 全域狀態、Web Audio 音效合成器與 Web Speech API 真人英語發音引擎
+     * ============================================================================
+     */
+    let activeMod = 0;
+    const modPassed = [false, false, false, false, false, false];
+    const engPassed = [false, false, false, false, false, false];
+    let audioEnabled = true;
+    let audioCtx = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      const icon = document.getElementById('audioIcon');
+      if (icon) icon.textContent = audioEnabled ? '🔊' : '🔇';
+      if (audioEnabled) playSound('click');
+    }
+
+    function playSound(type) {
+      if (!audioEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(720, now);
+          osc.frequency.exponentialRampToValueAtTime(960, now + 0.04);
+          gain.gain.setValueAtTime(0.07, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.055);
+        } else if (type === 'beep') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.setValueAtTime(1174.66, now + 0.07);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.19);
+        } else if (type === 'warn') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(210, now);
+          osc.frequency.linearRampToValueAtTime(140, now + 0.22);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'fanfare') {
+          const notes = [523.25, 659.25, 783.99, 1046.5];
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + i * 0.07);
+            gain.gain.setValueAtTime(0.12, now + i * 0.07);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.28);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.07);
+            osc.stop(now + i * 0.07 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function speakEnglish(text) {
+      playSound('click');
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const cleanText = String(text).replace(/\(.*?\)/g, '').trim();
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        utter.lang = 'en-US';
+        utter.rate = 0.92;
+        window.speechSynthesis.speak(utter);
+      } catch (e) {}
+    }
+
+    /**
+     * ============================================================================
+     * 2. 六大模組資料與《電機科高二專業英文暨職場英文學習手冊》100% 對齊題庫
+     * ============================================================================
+     */
+    const MODULES_DATA = [
+      {
+        code: "對齊手冊 P.33, 35, 36｜次系統② 姿態控制 [S, T, U, V, W]",
+        title: "模組 1：【無重力太空舵手 - Attitude Control & Reaction Wheel】",
+        painDefault: "⚠️ 初始狀態：衛星失控翻滾中 (Tumbling Alert)",
+        analogy: "💡 <strong>手冊 P.33 & P.35 秒懂比喻：</strong>太空中沒有空氣 (No air in space)，衛星要怎麼轉向？靠電機科最熟悉的<strong>「馬達 (Motor) 轉動反應輪 (Reaction Wheel W)」</strong>！輪子順時針轉，衛星就逆時針轉向（只改變方向、不改變軌道）；若要升軌或降軌才用<strong>推進器 (Thruster)</strong>！",
+        vocab: [
+          { term: "Attitude Control", ipa: "/ˈætɪˌtud kənˈtroʊl/", zh: "姿態控制（手冊 P.33/36：It points the satellite in the right direction.）", code: "手冊 P.36" },
+          { term: "Reaction Wheel & Motor", ipa: "/riˈækʃən wil/", zh: "反應輪/反作用輪與馬達（A motor spins a wheel inside it to turn the satellite）", code: "電工機械 C" },
+          { term: "Thruster (Station-keeping)", ipa: "/ˈθrʌstər/", zh: "推進器（手冊 P.33：向外噴出氣體或離子以改變軌道高度、升軌或降軌 deorbit）", code: "手冊 P.33" },
+          { term: "Sensor (Sun / Star Tracker)", ipa: "/ˈsɛnsər/", zh: "感測器（手冊 P.12/36：判斷朝向、量測溫度光線，對應感測器與 PLC 課程）", code: "代碼 S, V" },
+          { term: "It's not rocket science!", ipa: "/ɪts nɑːt ˈrɑːkɪt ˈsaɪəns/", zh: "【手冊 P.46 太空片語】這又不是造火箭！（意思：別慌，這並不難理解！）", code: "Space Idiom" }
+        ],
+        briefingEn: "\"The attitude control system points the satellite in the right direction. A motor spins a reaction wheel inside it, while thrusters change the orbit.\"",
+        briefingZh: "【對齊手冊 P.33 & P.37 Say It】「姿態控制系統讓衛星指向正確方向。內部的馬達帶動反應輪讓衛星轉向，而推進器則負責改變軌道。」",
+        jobLink: "🎓 電機科連結 (手冊 P.36/38)：對應【C. 電工機械 Electrical Machinery / F. PLC 實習】｜太空職涯：Embedded Software & Control Engineer",
+        quizPrompt: "【手冊 P.35 Predict 1 實戰】老師問你：「There is no air in space. How does a satellite turn (太空沒有空氣，衛星怎麼轉向)?」",
+        quizOpts: [
+          "A motor spins a reaction wheel inside it (馬達帶動內部的反應輪轉動).",
+          "It uses small wings to push the wind.",
+          "It waits for the rain in space."
+        ],
+        quizAns: 0,
+        quizExp: "完全對齊手冊 P.35 第 1 題 (B)！太空中沒有空氣，衛星是靠馬達轉動內部的 Reaction Wheel（反應輪）來轉向！"
+      },
+      {
+        code: "對齊手冊 P.34, 36, 39｜參訪第一站：整測廠房 AIT [M, N, O, Q, P]",
+        title: "模組 2：【參訪第一站：衛星整測廠房 - AIT Facility & Cleanroom】",
+        painDefault: "⚠️ 初始狀態：尚未通過 AIT 三大太空環境認證 (Unqualified)",
+        analogy: "💡 <strong>手冊 P.34 & P.39 參訪第一站重點：</strong>衛星發射前必須在<strong>「無塵室 (Cleanroom)」</strong>穿防塵衣組裝，並通過 <strong>AIT (Assembly, Integration & Test)</strong> 酷刑考驗：<strong>振動測試 (Vibration)</strong> 模擬發射搖晃、<strong>熱真空 (Thermal vacuum)</strong> 模擬真空冷熱、<strong>電磁相容 (EMC)</strong> 確認電子元件不互相干擾！",
+        vocab: [
+          { term: "Integration & Test (AIT)", ipa: "/ˌɪntɪˈɡreɪʃən ænd tɛst/", zh: "組裝、整合與測試（手冊 P.34/39 參訪第一站：確認衛星上太空後仍能正常運作）", code: "10/20 第一站" },
+          { term: "Vibration & Acoustic Test", ipa: "/vaɪˈbreɪʃən tɛst/", zh: "振動與音震測試（手冊 P.34/36：模擬火箭發射時的劇烈搖晃與 140dB 聲浪）", code: "代碼 M, N" },
+          { term: "Thermal Vacuum Test", ipa: "/ˈθɜːrməl ˈvækjuːm/", zh: "熱真空測試（手冊 P.34：在巨型真空艙內模擬太空真空與極端冷熱循環）", code: "代碼 O" },
+          { term: "EMC Test & Cleanroom", ipa: "/iː ɛm siː tɛst/", zh: "電磁相容測試與無塵室（手冊 P.34/39：確認電子元件不互相干擾；穿無塵衣防灰塵 dust）", code: "代碼 Q" },
+          { term: "Shoot for the moon!", ipa: "/ʃuːt fɔːr ðə muːn/", zh: "【手冊 P.46 太空片語】立志高遠、瞄準最高目標全力以赴！", code: "Space Idiom" }
+        ],
+        briefingEn: "\"Ask the Guide at Station 1: What is the hardest test for a satellite? Which parts of this satellite are made in Taiwan?\"",
+        briefingZh: "【對齊手冊 P.39 參訪第一站必問導覽員金句】「請問對一顆衛星來說最困難的測試是什麼？這顆衛星有哪些零件是台灣製造的？」",
+        jobLink: "🎓 電機科連結 (手冊 P.38)：太空職涯【Test Engineer 測試工程師】— He/She tests satellites with vibration, heat, vacuum and EMC tests.",
+        quizPrompt: "【手冊 P.39 Station 1 Find It】在參訪第一站衛星整測廠房時，導覽員問：「Why do engineers wear special clothes in this cleanroom?」",
+        quizOpts: [
+          "To keep out tiny dust, because dust can damage optical lenses, solar panels and circuits.",
+          "Because they are going swimming after work.",
+          "Because there is no oxygen in Hsinchu."
+        ],
+        quizAns: 0,
+        quizExp: "完全對齊手冊 P.39 第一站提示 (cleanroom, dust)！無塵室裡連一粒微小灰塵都可能損害鏡頭與精密電路。"
+      },
+      {
+        code: "對齊手冊 P.13, 33, 35, 36｜次系統①&⑤ 電力與熱控 [Y, Z, AA, BB]",
+        title: "模組 3：【衛星電力與軌道冷熱盾 - Power (EPS) & Thermal Control】",
+        painDefault: "⚠️ 初始狀態：核心溫度與電力失衡 (Thermal & Power Hazard)",
+        analogy: "💡 <strong>手冊 P.33 & P.35 秒懂比喻：</strong>衛星的電從哪來？<strong>Solar cells (太陽能板)</strong> 把陽光變電能，<strong>Batteries (電池)</strong> 儲存電能，再由 <strong>Power Control Unit (電力控制單元)</strong> 分配！而面對太空每 90 分鐘一次的烈日與地影酷寒，全靠 <strong>MLI 絕熱金箔衣 (Y)</strong>、<strong>散熱片 (AA)</strong> 與<strong>電熱器 (Z)</strong>！",
+        vocab: [
+          { term: "Solar Panel & Battery", ipa: "/ˈsoʊlər ˈpænəl/", zh: "太陽能板與充電電池（手冊 P.35：Solar cells change sunlight into electricity, and batteries store energy）", code: "基本電學 A" },
+          { term: "Power Control Unit (PCU)", ipa: "/ˈpaʊər kənˈtroʊl/", zh: "電力控制單元（手冊 P.33/36：管理與分配全衛星供電，福衛八號關鍵自製元件）", code: "電子學 B" },
+          { term: "Structure & Thermal (MLI)", ipa: "/ˈstrʌktʃər ænd ˈθɜːrməl/", zh: "結構與熱控次系統（手冊 P.33：撐住衛星並用 MLI 絕熱衣、散熱片與加熱器維持溫度）", code: "代碼 Y,Z,AA" },
+          { term: "Resistor, Capacitor, Diode", ipa: "/rɪˈzɪstər/", zh: "電阻(限流)、電容(儲能)、二極體(單向導通)（手冊 P.11-12 電機科六大元件）", code: "手冊 P.12" },
+          { term: "The sky's the limit!", ipa: "/ðə skaɪz ðə ˈlɪmɪt/", zh: "【手冊 P.46 太空片語】前途無量、沒有極限！（電機科同學懂電力與控制，未來無限寬廣）", code: "Space Idiom" }
+        ],
+        briefingEn: "\"The power system makes, stores and controls electricity. In Basic Electricity class, we learn about voltage, current, batteries and circuits.\"",
+        briefingZh: "【對齊手冊 P.13 & P.37 Say It 範例句】「電力系統負責發電、儲能與控電。在基本電學課堂上，我們學習電壓、電流、電池與電路。」",
+        jobLink: "🎓 電機科連結 (手冊 P.38)：太空職涯【Power Engineer 電力工程師】— He/She designs the power system: solar panels, batteries and power control.",
+        quizPrompt: "【手冊 P.13 Why Us? 電機科核心價值】向德國交換生 Lukas 或外賓介紹電機科時，我們如何用英文說出電機科連結機械 (Body) 與資訊 (Code) 的角色？",
+        quizOpts: [
+          "We make the power and the control that connect the two. Without us, the body cannot move and the code cannot run.",
+          "We only paint the outside of the machine.",
+          "We don't use any electricity or circuits."
+        ],
+        quizAns: 0,
+        quizExp: "完全對齊手冊 P.13 金句！電機科負責 Power（電力）與 Control（控制），沒有電機科，機械身體不會動、資訊程式碼也跑不起來！"
+      },
+      {
+        code: "對齊手冊 P.28, 32, 36, 42｜齊柏林衛星 (福衛八號) 與福衛五號 [E, H, L]",
+        title: "模組 4：【看見台灣太空鷹眼 - Chi Po-lin (FS-8A) & Optical Payload】",
+        painDefault: "🔍 任務目標：體驗光學遙測解析度並認識 84% 台灣自製齊柏林衛星",
+        analogy: "💡 <strong>手冊 P.28, P.32 & P.42 重點：</strong>2017 年<strong>福衛五號 (FORMOSAT-5)</strong> 開創台灣自主光學遙測（2m 黑白 + 4m 彩色）；2025 年底升空的福衛八號首顆衛星<strong>「齊柏林衛星 (Chi Po-lin, FS-8A)」</strong>飛在 <strong>561 km</strong> 低軌道，<strong>84% 關鍵元件台灣製造</strong>，解析度更進化至亞米級（<1m）！",
+        vocab: [
+          { term: "Chi Po-lin (FORMOSAT-8A)", ipa: "/ˈfɔːrmoʊsæt eɪt eɪ/", zh: "齊柏林衛星（手冊 P.28/42：2025年底升空，84%關鍵元件台灣自製，拍下清晰台灣影像）", code: "手冊 P.28,42" },
+          { term: "Payload & Image Sensor", ipa: "/ˈpeɪˌloʊd/", zh: "酬載與影像感測器（手冊 P.33/36：It turns light into data and stores it in memory）", code: "微處理機 D" },
+          { term: "Panchromatic vs. Multispectral", ipa: "/ˌpænkrəˈmætɪk/", zh: "全色態黑白高解析度 (代碼 L) 與多光譜彩色影像 (代碼 H)，可透過融合產出高清彩圖", code: "代碼 E,H,L" },
+          { term: "Transistor & Photolithography", ipa: "/trænˈzɪstər/", zh: "電晶體與微影曝光（手冊 P.6/11：衛星影像處理器與感測晶片皆由台積電等晶圓廠製程打造）", code: "Unit 1 連結" },
+          { term: "A moonshot", ipa: "/ə ˈmuːnˌʃɑːt/", zh: "【手冊 P.46 太空片語】遠大而大膽的挑戰！（從福衛五號到八顆福衛八號星系就是台灣的太空挑戰）", code: "Space Idiom" }
+        ],
+        briefingEn: "\"In late 2025, Taiwan launched the Chi Po-lin satellite (FORMOSAT-8A), with 84% of its key parts made in Taiwan, to take clear pictures of floods, landslides and cities.\"",
+        briefingZh: "【對齊手冊 P.28, P.29 & P.42 課文】「2025 年底台灣發射了齊柏林衛星（福衛八號A），84% 關鍵元件為台灣製造，用來拍攝淹水、土石流與城市的高清影像。」",
+        jobLink: "🎓 電機科連結 (手冊 P.36/38)：對應【D. 微處理機實習 Microprocessor Lab】｜太空職涯：【Image Data Analyst 影像資料分析師】",
+        quizPrompt: "【手冊 P.43 Reading Check Q2】根據課文《The New Space Race: Where Is Taiwan?》：「What does the Chi Po-lin satellite (齊柏林衛星) do?」",
+        quizOpts: [
+          "It takes clear pictures of Taiwan from space (84% key parts made in Taiwan).",
+          "It carries astronauts to land on Mars.",
+          "It swims under the ocean to cut cables."
+        ],
+        quizAns: 0,
+        quizExp: "完全對齊手冊 P.43 閱讀測驗第 2 題 (C)！齊柏林衛星從太空中拍下清晰的台灣影像，協助防災與國土監測。"
+      },
+      {
+        code: "對齊手冊 P.28, 29, 44｜福衛七號與獵風者氣象觀測 [D, F, X]",
+        title: "模組 5：【颱風預報守護神 - FORMOSAT-7 & Triton Weather Satellites】",
+        painDefault: "📡 任務目標：發射 GNSS 電波穿透大氣層，掌握颱風動向",
+        analogy: "💡 <strong>手冊 P.28 & P.29 氣象應用：</strong>為什麼太空對台灣這麼重要？<strong>「Watch the weather: Satellites help us see where a typhoon is going!」</strong>2019 年升空的 6 顆<strong>福衛七號 (FORMOSAT-7)</strong> 利用無線電波穿過大氣層的折射（像水杯筷子彎曲）量測溫濕度；2023 年自製<strong>獵風者 (Triton)</strong> 則接收海面反射訊號測颱風風速！",
+        vocab: [
+          { term: "Forecast Typhoons", ipa: "/ˈfɔːrkæst ˈtaɪfuːnz/", zh: "預報颱風（手冊 P.28/29：FORMOSAT-7 six satellites collect weather data and help forecast typhoons）", code: "手冊 P.28" },
+          { term: "Triton Weather Satellite", ipa: "/ˈtraɪtən/", zh: "獵風者氣象衛星（手冊 P.28：2023年TASA改制同年升空之台灣自製氣象衛星，觀測海面風速）", code: "手冊 P.28" },
+          { term: "Radio Occultation (TGRS)", ipa: "/ˈreɪdioʊ ˌɑːkjʊlˈteɪʃən/", zh: "無線電掩星技術與接收儀（代碼 D, F, X：量測 GNSS 訊號穿過大氣層的折射彎曲角）", code: "代碼 D,F,X" },
+          { term: "PREP Speaking Method", ipa: "/prɛp/", zh: "手冊 P.45 一分鐘英文口說公式：Point (立場) → Reason (理由) → Example (颱風經驗) → Point (結論)", code: "手冊 P.45" },
+          { term: "Over the moon", ipa: "/ˈoʊvər ðə muːn/", zh: "【手冊 P.46 太空片語】欣喜若狂、高興極了！（當衛星成功傳回第一筆颱風資料時工程師的心情）", code: "Space Idiom" }
+        ],
+        briefingEn: "\"In my opinion, Taiwan should spend money on space. This is because satellites help us see where a typhoon is going and keep us safe.\"",
+        briefingZh: "【對齊手冊 P.44 & P.45 PREP 口說範本】「我認為台灣應該投資太空。這是因為衛星能幫我們掌握颱風動向並保護我們的安全。」",
+        jobLink: "🎓 電機科連結 (手冊 P.36/44)：Taiwan needs more engineers who understand power, circuits, sensors and chips, like us!",
+        quizPrompt: "【手冊 P.44 Ben & Amy 聽力填空第 1 題】Ben 說：「Satellites help us in many ways. For example, they show us where a ______ is going.」請問空格應填入哪個單字？",
+        quizOpts: [
+          "typhoon (颱風 — 對應福衛七號與獵風者氣象衛星任務)",
+          "bicycle (腳踏車)",
+          "pencil (鉛筆)"
+        ],
+        quizAns: 0,
+        quizExp: "完全對齊手冊 P.44 第 (1) 格標準答案：typhoon！福衛七號與獵風者衛星就是台灣預報颱風動向的最大功臣。"
+      },
+      {
+        code: "對齊手冊 P.29, 34, 40, 44｜參訪第二站：10樓操控中心與馬祖海纜韌性 [K, R, A, B, C]",
+        title: "模組 6：【參訪第二站：10F 衛星操控中心 - 10-Min Pass & Telemetry】",
+        painDefault: "⏱️ 初始狀態：過境地面站僅約 10 分鐘 (10-Min Pass)，待建立通聯",
+        analogy: "💡 <strong>手冊 P.34 & P.40 參訪第二站重點：</strong>低軌衛星每次飛過台灣<strong>地面站 (Ground station)</strong> 的<strong>「一次過境 (Pass) 只有約 10 分鐘」</strong>！10 樓操控中心的操控員必須把握這 10 分鐘完成：<strong>追蹤 (Tracking)</strong>、用 S 頻段接收<strong>遙測健康資料 (Telemetry ↓)</strong> 與送出<strong>指令 (Commands ↑)</strong>，再用 X 頻段高速下載照片！",
+        vocab: [
+          { term: "Pass & Ground Station", ipa: "/pæs/ /ɡraʊnd ˈsteɪʃən/", zh: "過境與地面站（手冊 P.34/40：低軌衛星每次飛過地面站只有約 10 分鐘可通聯，一天僅幾次機會）", code: "10/20 第二站" },
+          { term: "Tracking, Telemetry, Commands", ipa: "/təˈlɛmətri/", zh: "追蹤、遙測(下傳電池/溫度健康資料)與指令(上傳控制命令)（手冊 P.34/40 參訪 10 樓核心）", code: "代碼 A,B,K" },
+          { term: "Undersea Cable & Emergency", ipa: "/ˌʌndərˈsiː ˈkeɪbəl/", zh: "海底電纜與緊急情況（手冊 P.29/44：馬祖海纜斷線時，居民使用衛星訊號 satellite signals 上網）", code: "手冊 P.29,44" },
+          { term: "S-Band vs. X-Band Antenna", ipa: "/ænˈtɛnə/", zh: "S頻段(穩定傳送遙測與指令) 與 X頻段(高速下傳遙測影像資料 Data processing)", code: "代碼 K,R,C" },
+          { term: "Once in a blue moon", ipa: "/wʌns ɪn ə bluː muːn/", zh: "【手冊 P.46 太空片語】千載難逢、極少發生（海底電纜斷線雖不常發生，但衛星備援不可或缺！）", code: "Space Idiom" }
+        ],
+        briefingEn: "\"Ask the Guide at 10F Control Center: How long can you talk to the satellite each time? The operators check telemetry and send commands during a 10-minute pass.\"",
+        briefingZh: "【對齊手冊 P.40 參訪第二站 10 樓操控中心金句】「問導覽員：每次可以跟衛星通話多久？操控員在約 10 分鐘的過境期間檢查遙測資料並送出指令。」",
+        jobLink: "🎓 電機科連結 (手冊 P.38)：太空職涯【Satellite Operator 衛星操控員 & Communication Engineer 通訊工程師】",
+        quizPrompt: "【手冊 P.44 聽力理解 & P.40 參訪第二站】當馬祖的海底電纜被切斷時 (When the undersea cables to Matsu were cut)，當地居民如何上網？且低軌衛星每次飛過台灣地面站可通聯多久？",
+        quizOpts: [
+          "They used satellite signals to get online; and each ground pass over Taiwan is about 10 minutes.",
+          "They swam to Taiwan; and a pass takes 24 hours.",
+          "They used a rocket to carry letters."
+        ],
+        quizAns: 0,
+        quizExp: "完全對齊手冊 P.34、P.40 與 P.44！馬祖海纜斷線時靠「衛星訊號 (satellite signals)」保持連線；而低軌衛星每次過境地面站約 10 分鐘！"
+      }
+    ];
+
+    /**
+     * ============================================================================
+     * 3. 模組切換與職場英文學習面板渲染
+     * ============================================================================
+     */
+    function switchModule(idx) {
+      playSound('click');
+      activeMod = idx;
+
+      // 切換左側模擬面板顯示
+      for (let i = 0; i < 6; i++) {
+        const panel = document.getElementById(`simPanel${i}`);
+        const tab = document.getElementById(`tabBtn${i}`);
+        if (i === idx) {
+          panel.classList.remove('hidden');
+          tab.className = "tab-btn p-2.5 rounded-xl border text-left transition flex flex-col justify-between bg-cyan-500/20 border-cyan-400 text-white shadow-lg shadow-cyan-500/10";
+        } else {
+          panel.classList.add('hidden');
+          tab.className = "tab-btn p-2.5 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-600";
+        }
+      }
+
+      // 更新破題卡
+      const m = MODULES_DATA[idx];
+      document.getElementById('modCodeBadge').textContent = m.code;
+      document.getElementById('modTitle').textContent = m.title;
+      document.getElementById('modAnalogyText').innerHTML = m.analogy;
+      updateModPainBadge();
+
+      // 渲染右側職場英文單字卡
+      const vocabBox = document.getElementById('vocabListContainer');
+      vocabBox.innerHTML = '';
+      m.vocab.forEach(v => {
+        const card = document.createElement('button');
+        card.className = "vocab-card w-full text-left p-3 rounded-xl bg-slate-900/90 border border-slate-700/90 flex items-start justify-between gap-2";
+        card.onclick = () => speakEnglish(v.term);
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono-tech font-bold text-sm text-amber-300">${v.term}</span>
+              <span class="text-[11px] font-mono-tech text-slate-400">${v.ipa}</span>
+              <span class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-400/30">${v.code}</span>
+            </div>
+            <div class="text-xs text-slate-200 mt-1">${v.zh}</div>
+          </div>
+          <span class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-xs shrink-0">🔊</span>
+        `;
+        vocabBox.appendChild(card);
+      });
+
+      // 渲染職場簡報金句與電機科職涯連結
+      document.getElementById('briefingEnText').textContent = m.briefingEn;
+      document.getElementById('briefingZhText').textContent = m.briefingZh;
+      const jobBadge = document.getElementById('handbookJobBadge');
+      if (jobBadge) jobBadge.textContent = m.jobLink || '';
+
+      // 渲染職場英文微任務
+      renderWorkplaceQuiz(idx);
+
+      // 重繪對應 Canvas
+      setTimeout(() => {
+        if (idx === 3) drawMod3Canvas();
+        if (idx === 4) drawMod4Canvas();
+      }, 30);
+    }
+
+    function speakCurrentBriefing() {
+      const m = MODULES_DATA[activeMod];
+      speakEnglish(m.briefingEn.replace(/"/g, ''));
+    }
+
+    function renderWorkplaceQuiz(idx) {
+      const m = MODULES_DATA[idx];
+      const isDone = engPassed[idx];
+      document.getElementById('engCheckPrompt').textContent = m.quizPrompt;
+      const badge = document.getElementById('engCheckBadge');
+      badge.textContent = isDone ? '✓ 職場英文已過關' : '請選擇正確英文應對';
+      badge.className = isDone
+        ? 'text-xs font-mono-tech px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+        : 'text-xs font-mono-tech px-2 py-0.5 rounded bg-slate-800 text-slate-400';
+
+      const optsBox = document.getElementById('engCheckOptions');
+      optsBox.innerHTML = '';
+      const fb = document.getElementById('engCheckFeedback');
+      fb.className = 'hidden';
+
+      m.quizOpts.forEach((opt, oIdx) => {
+        const btn = document.createElement('button');
+        const isCorrect = oIdx === m.quizAns;
+        btn.className = `w-full text-left p-2.5 rounded-xl border text-xs font-mono-tech transition ${
+          isDone && isCorrect
+            ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 font-bold'
+            : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-200'
+        }`;
+        btn.textContent = `${['A', 'B', 'C'][oIdx]}. ${opt}`;
+        btn.onclick = () => {
+          speakEnglish(opt);
+          if (isCorrect) {
+            playSound('fanfare');
+            engPassed[idx] = true;
+            renderWorkplaceQuiz(idx);
+            fb.className = 'mt-3 text-xs p-2.5 rounded-lg border bg-emerald-950/50 border-emerald-500/50 text-emerald-200 block';
+            fb.textContent = '🎯 ' + m.quizExp;
+          } else {
+            playSound('warn');
+            fb.className = 'mt-3 text-xs p-2.5 rounded-lg border bg-rose-950/50 border-rose-500/50 text-rose-200 block';
+            fb.textContent = '💡 請再試一次！提示：對照上方職場英文單字卡的專業術語。';
+          }
+        };
+        optsBox.appendChild(btn);
+      });
+    }
+
+    function markModulePassed(idx) {
+      if (!modPassed[idx]) {
+        modPassed[idx] = true;
+        playSound('fanfare');
+      }
+      document.getElementById(`tabStatus${idx}`).textContent = '✅';
+      const count = modPassed.filter(Boolean).length;
+      document.getElementById('missionProgressText').textContent = `${count} / 6 模組過關`;
+      updateModPainBadge();
+    }
+
+    function updateModPainBadge() {
+      const badge = document.getElementById('modPainBadge');
+      if (modPassed[activeMod]) {
+        badge.textContent = '✅ 工程模擬已通過 (Mission Accomplished)';
+        badge.className = 'text-xs font-mono-tech px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40';
+      } else {
+        badge.textContent = MODULES_DATA[activeMod].painDefault;
+        badge.className = 'text-xs font-mono-tech px-2.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse';
+      }
+    }
+
+    /**
+     * ============================================================================
+     * 4. 模組 01：AOCS 姿態控制模擬器 (Canvas 動畫與角動量物理)
+     * ============================================================================
+     */
+    let aocsAngle = 128;
+    let aocsSpin = 45; // deg/s
+    let mtqOn = false;
+
+    function updateMod0() {
+      playSound('click');
+      const rpm = Number(document.getElementById('rwSlider').value);
+      document.getElementById('rwRpmLabel').textContent = `${rpm} RPM (目標: -4500 RPM)`;
+      // 計算淨角速度：原本 +45 deg/s，加上反作用輪反向抵銷 (rpm / 100)
+      aocsSpin = 45 + (rpm / 100);
+      if (mtqOn && Math.abs(aocsSpin) <= 8) {
+        aocsSpin = 0;
+        aocsAngle = 0;
+        document.getElementById('aocsSuccessBanner').classList.remove('hidden');
+        markModulePassed(0);
+      } else {
+        document.getElementById('aocsSuccessBanner').classList.add('hidden');
+      }
+      updateAocsHUD();
+    }
+
+    function toggleMagnetorquer() {
+      mtqOn = !mtqOn;
+      playSound('beep');
+      const btn = document.getElementById('mtqToggleBtn');
+      btn.textContent = mtqOn ? '🧲 磁力棒 (U)：已通電鎖定中' : '🧲 啟動磁力棒 (U)：關閉';
+      btn.className = mtqOn
+        ? 'flex-1 py-2.5 px-3 rounded-xl border border-cyan-400 bg-cyan-500/25 text-xs font-bold text-cyan-200 transition'
+        : 'flex-1 py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold transition';
+      updateMod0();
+    }
+
+    function resetMod0() {
+      document.getElementById('rwSlider').value = 0;
+      mtqOn = false;
+      aocsAngle = 128;
+      aocsSpin = 45;
+      document.getElementById('mtqToggleBtn').textContent = '🧲 啟動磁力棒 (U)：關閉';
+      document.getElementById('mtqToggleBtn').className = 'flex-1 py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold transition';
+      updateMod0();
+    }
+
+    function updateAocsHUD() {
+      const spinEl = document.getElementById('aocsSpinVal');
+      const errEl = document.getElementById('aocsAngleErr');
+      const solEl = document.getElementById('aocsSolarVal');
+      if (aocsSpin === 0 && aocsAngle === 0) {
+        spinEl.textContent = '0.0 °/s (穩定鎖定)';
+        spinEl.className = 'text-emerald-400 font-bold';
+        errEl.textContent = '0.00° (星象儀 V 鎖定)';
+        errEl.className = 'text-emerald-400 font-bold';
+        solEl.textContent = '100% (太陽感測器 S 正對陽光)';
+        solEl.className = 'text-emerald-400 font-bold';
+      } else {
+        spinEl.textContent = `${aocsSpin > 0 ? '+' : ''}${aocsSpin.toFixed(1)} °/s`;
+        spinEl.className = 'text-rose-400 font-bold';
+        errEl.textContent = `${Math.abs(Math.round(aocsAngle) % 360)}°`;
+        errEl.className = 'text-amber-300 font-bold';
+        solEl.textContent = '18% (翻滾偏離陽光)';
+        solEl.className = 'text-slate-400';
+      }
+    }
+
+    function animateMod0Canvas() {
+      const canvas = document.getElementById('canvasMod0');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+        canvas.width = canvas.clientWidth || 600;
+        canvas.height = canvas.clientHeight || 260;
+      }
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // 繪製右側太陽光束
+      const sunGrad = ctx.createLinearGradient(w - 120, 0, w, 0);
+      sunGrad.addColorStop(0, 'rgba(255, 183, 3, 0)');
+      sunGrad.addColorStop(1, 'rgba(255, 183, 3, 0.28)');
+      ctx.fillStyle = sunGrad;
+      ctx.fillRect(w - 120, 0, 120, h);
+      ctx.fillStyle = '#ffb703';
+      ctx.font = 'bold 12px "JetBrains Mono"';
+      ctx.fillText('☀️ SUNLIGHT →', w - 115, h / 2);
+
+      // 繪製地球磁力線 (若磁力棒啟動)
+      if (mtqOn) {
+        ctx.strokeStyle = 'rgba(0, 210, 255, 0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 6]);
+        ctx.beginPath();
+        ctx.arc(w / 2, h + 120, 220, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // 更新旋轉角度
+      aocsAngle = (aocsAngle + aocsSpin * 0.04) % 360;
+
+      // 繪製衛星本體
+      ctx.save();
+      ctx.translate(w / 2, h / 2 + 10);
+      ctx.rotate((aocsAngle * Math.PI) / 180);
+
+      // 太陽能板
+      ctx.fillStyle = '#0284c7';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.fillRect(-110, -12, 65, 24);
+      ctx.strokeRect(-110, -12, 65, 24);
+      ctx.fillRect(45, -12, 65, 24);
+      ctx.strokeRect(45, -12, 65, 24);
+
+      // 衛星金箔本體
+      ctx.fillStyle = '#d97706';
+      ctx.strokeStyle = '#fde047';
+      ctx.fillRect(-35, -35, 70, 70);
+      ctx.strokeRect(-35, -35, 70, 70);
+
+      // 內部反作用輪 (W) 視覺
+      ctx.beginPath();
+      ctx.arc(0, 0, 18, 0, Math.PI * 2);
+      ctx.fillStyle = '#0f172a';
+      ctx.fill();
+      ctx.strokeStyle = '#00d2ff';
+      ctx.stroke();
+      ctx.fillStyle = '#00d2ff';
+      ctx.font = 'bold 10px "JetBrains Mono"';
+      ctx.fillText('RW(W)', -15, 4);
+
+      // 太陽感測器指向箭頭 (S)
+      ctx.strokeStyle = aocsSpin === 0 ? '#10b981' : '#f43f5e';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(35, 0);
+      ctx.lineTo(65, 0);
+      ctx.stroke();
+
+      ctx.restore();
+      requestAnimationFrame(animateMod0Canvas);
+    }
+
+    /**
+     * ============================================================================
+     * 5. 模組 02：I&T 整測廠房五大極限試煉場
+     * ============================================================================
+     */
+    const itChambers = [
+      { code: "[代碼 M] Acoustic Chamber", title: "1. 音震測試艙：拉升聲壓至 140 dB 驗證結構抗聲浪", desc: "將滑桿拉至最右側 (100%)，釋放 140 dB 高壓氮氣喇叭聲浪，確認太陽能板不震裂！", unit: val => `${80 + Math.round(val * 0.6)} dB (目標 140dB)` },
+      { code: "[代碼 N] Vibration Shaker", title: "2. 振動台測試：掃頻至 100 Hz 驗證火箭發動機低頻顛簸", desc: "將滑桿拉至最右側，進行 X/Y/Z 三軸隨機與正弦振動測試，確保螺絲與焊點不鬆脫！", unit: val => `${val} Hz 三軸振動` },
+      { code: "[代碼 O] Thermal Vacuum (TVAC)", title: "3. 熱真空艙：抽真空並進行 ±100°C 液態氮冰火循環", desc: "將滑桿拉至最右側，抽真空至 10⁻⁶ Torr 並循環極端高低溫，驗證衛星不會凍裂或熱當！", unit: val => `真空度 ${val}% (±100°C)` },
+      { code: "[代碼 Q] EMI / EMC Anechoic Chamber", title: "4. 電磁干擾與相容暗室：滿牆藍色吸波錐零干擾掃描", desc: "將滑桿拉至最右側，完成全頻段電磁輻射掃描，確認通訊天線與星載電腦不會互相干擾！", unit: val => `頻譜掃描 ${val}%` },
+      { code: "[代碼 P] Mass Properties & CG", title: "5. 質量特性量測儀：精密校正衛星重心 (CG) 偏移量 < 0.5mm", desc: "將滑桿拉至最右側，完成轉動慣量與質心配重平衡校正，避免火箭推力偏航！", unit: val => `重心校正精準度 ${val}%` }
+    ];
+    let currentITIdx = 0;
+    const itDone = [false, false, false, false, false];
+
+    function selectITChamber(idx) {
+      playSound('click');
+      currentITIdx = idx;
+      const c = itChambers[idx];
+      document.getElementById('itActiveCode').textContent = c.code;
+      document.getElementById('itActiveTitle').textContent = c.title;
+      document.getElementById('itActiveDesc').textContent = c.desc;
+      const slider = document.getElementById('itTestSlider');
+      slider.value = itDone[idx] ? 100 : 0;
+      document.getElementById('itSliderReadout').textContent = c.unit(slider.value);
+      updateITButtonsUI();
+    }
+
+    function handleITSlider(val) {
+      const v = Number(val);
+      const c = itChambers[currentITIdx];
+      document.getElementById('itSliderReadout').textContent = c.unit(v);
+      if (v >= 96 && !itDone[currentITIdx]) {
+        itDone[currentITIdx] = true;
+        playSound('beep');
+        updateITButtonsUI();
+        if (itDone.every(Boolean)) {
+          document.getElementById('itStampOverlay').classList.remove('hidden');
+          markModulePassed(1);
+        }
+      }
+    }
+
+    function updateITButtonsUI() {
+      const doneCount = itDone.filter(Boolean).length;
+      document.getElementById('itPassCount').textContent = `已通過：${doneCount} / 5 艙房`;
+      for (let i = 0; i < 5; i++) {
+        const btn = document.getElementById(`itBtn${i}`);
+        document.getElementById(`itChk${i}`).textContent = itDone[i] ? '✅' : '⬜';
+        if (i === currentITIdx) {
+          btn.className = "p-3 rounded-xl border border-cyan-400 bg-cyan-500/20 text-left transition";
+        } else if (itDone[i]) {
+          btn.className = "p-3 rounded-xl border border-emerald-500/50 bg-emerald-500/10 text-left transition";
+        } else {
+          btn.className = "p-3 rounded-xl border border-slate-800 bg-slate-900/90 text-left transition";
+        }
+      }
+      const st = document.getElementById('itActiveStatus');
+      st.textContent = itDone[currentITIdx] ? '✓ 本艙驗證通過' : '請拉動滑桿施測';
+      st.className = itDone[currentITIdx]
+        ? 'text-xs font-mono-tech px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300'
+        : 'text-xs font-mono-tech px-2.5 py-1 rounded bg-slate-800 text-slate-300';
+    }
+
+    /**
+     * ============================================================================
+     * 6. 模組 03：TCS 軌道熱控防護盾
+     * ============================================================================
+     */
+    const tcsGear = { mli: false, rad: false, heater: false };
+    let tcsSunPassed = false;
+    let tcsEclipsePassed = false;
+
+    function toggleTCSGear(key) {
+      tcsGear[key] = !tcsGear[key];
+      playSound('click');
+      updateMod2();
+    }
+
+    function updateMod2() {
+      const min = Number(document.getElementById('tcsOrbitSlider').value);
+      const isSun = min <= 50;
+      const zoneEl = document.getElementById('tcsOrbitZone');
+      if (isSun) {
+        zoneEl.textContent = `☀️ 向陽面 Sunlight (第 ${min} 分鐘, 外部 +120°C)`;
+        zoneEl.className = 'font-mono-tech font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300';
+      } else {
+        zoneEl.textContent = `🌑 背陽地影區 Eclipse (第 ${min} 分鐘, 外部 -110°C)`;
+        zoneEl.className = 'font-mono-tech font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300';
+      }
+
+      // 更新按鈕外觀
+      const bMli = document.getElementById('tcsBtnMLI');
+      bMli.querySelector('.font-bold').textContent = `多層絕熱金箔衣：${tcsGear.mli ? '✓ 已包覆' : '未包覆'}`;
+      bMli.className = `p-3 rounded-xl border text-left transition ${tcsGear.mli ? 'border-amber-400 bg-amber-500/20' : 'border-slate-700 bg-slate-900'}`;
+
+      const bRad = document.getElementById('tcsBtnRad');
+      bRad.querySelector('.font-bold').textContent = `輻射散熱片：${tcsGear.rad ? '✓ 已展開排熱' : '關閉'}`;
+      bRad.className = `p-3 rounded-xl border text-left transition ${tcsGear.rad ? 'border-cyan-400 bg-cyan-500/20' : 'border-slate-700 bg-slate-900'}`;
+
+      const bHeat = document.getElementById('tcsBtnHeat');
+      bHeat.querySelector('.font-bold').textContent = `主動電加熱器：${tcsGear.heater ? '✓ 通電加熱中' : '關閉'}`;
+      bHeat.className = `p-3 rounded-xl border text-left transition ${tcsGear.heater ? 'border-rose-400 bg-rose-500/20' : 'border-slate-700 bg-slate-900'}`;
+
+      // 計算衛星內部溫度
+      let temp = isSun ? 85 : -65;
+      if (isSun) {
+        if (tcsGear.mli) temp -= 45;
+        if (tcsGear.rad) temp -= 25;
+        if (tcsGear.heater) temp += 22;
+      } else {
+        if (tcsGear.mli) temp += 35;
+        if (tcsGear.rad) temp -= 15;
+        if (tcsGear.heater) temp += 38;
+      }
+
+      const tempEl = document.getElementById('tcsInternalTemp');
+      const badgeEl = document.getElementById('tcsSafetyBadge');
+      tempEl.textContent = `${temp > 0 ? '+' : ''}${temp.toFixed(1)} °C`;
+
+      if (temp >= -10 && temp <= 25) {
+        tempEl.className = 'text-2xl font-mono-tech font-black text-emerald-400 my-1';
+        badgeEl.textContent = '✓ 安全恆溫區間 (Optimal)';
+        badgeEl.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300';
+        if (isSun) tcsSunPassed = true;
+        else tcsEclipsePassed = true;
+      } else if (temp > 25) {
+        tempEl.className = 'text-2xl font-mono-tech font-black text-rose-400 my-1';
+        badgeEl.textContent = '🔥 過熱警報 (請包覆 MLI + 開散熱片，關電熱器)';
+        badgeEl.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300';
+      } else {
+        tempEl.className = 'text-2xl font-mono-tech font-black text-sky-400 my-1';
+        badgeEl.textContent = '❄️ 過冷警報 (地影區請包覆 MLI + 開啟電加熱器 Z)';
+        badgeEl.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300';
+      }
+
+      document.getElementById('tcsStageProgress').textContent = `向陽:${tcsSunPassed ? '✅' : '⬜'} 地影:${tcsEclipsePassed ? '✅' : '⬜'}`;
+      if (tcsSunPassed && tcsEclipsePassed) {
+        markModulePassed(2);
+      }
+    }
+
+    /**
+     * ============================================================================
+     * 7. 模組 04：福衛五號 2m 黑白 (L) vs 4m 彩色 (H) 光學取像比對
+     * ============================================================================
+     */
+    let isPanSharpened = false;
+
+    function updateMod3() {
+      const split = Number(document.getElementById('optSplitSlider').value);
+      document.getElementById('optSliderValText').textContent = `對比分割線：${split}%`;
+      drawMod3Canvas();
+    }
+
+    function triggerPanSharpen() {
+      isPanSharpened = !isPanSharpened;
+      playSound('beep');
+      const btn = document.getElementById('panSharpenBtn');
+      btn.textContent = isPanSharpened ? '✓ 已融合：2米超清晰彩色影像 (Pan-Sharpened)' : '✨ 執行 Pan-Sharpening 影像融合驗證';
+      drawMod3Canvas();
+      markModulePassed(3);
+    }
+
+    function drawMod3Canvas() {
+      const canvas = document.getElementById('canvasMod3');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.clientWidth || 600;
+      canvas.height = canvas.clientHeight || 260;
+      const w = canvas.width, h = canvas.height;
+      const splitX = (Number(document.getElementById('optSplitSlider').value) / 100) * w;
+
+      // 1. 先畫右側：彩色 4米多光譜 (色彩鮮豔但略帶像素方塊感)
+      ctx.save();
+      ctx.fillStyle = '#14532d'; // 綠地背景
+      ctx.fillRect(0, 0, w, h);
+
+      // 河川與道路
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(0, h - 45, w, 45);
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(0, 35, w, 28);
+
+      // 操場紅土跑道與草皮
+      ctx.fillStyle = '#b91c1c';
+      ctx.beginPath();
+      ctx.roundRect(w * 0.25, 80, w * 0.5, 110, 50);
+      ctx.fill();
+      ctx.fillStyle = '#16a34a';
+      ctx.beginPath();
+      ctx.roundRect(w * 0.31, 98, w * 0.38, 74, 32);
+      ctx.fill();
+
+      // 若開啟 Pan-Sharpening，在彩色圖上也疊加 2米高清標線與車輛細節
+      if (isPanSharpened) {
+        drawHighResDetails(ctx, w, h, '#fef08a');
+      }
+      ctx.restore();
+
+      // 2. 再畫左側裁切區：黑白 2米全色態 (高銳利度灰階 + 跑道線與2米車隊)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, splitX, h);
+      ctx.clip();
+
+      ctx.fillStyle = '#262626';
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#525252';
+      ctx.fillRect(0, h - 45, w, 45);
+      ctx.fillStyle = '#737373';
+      ctx.fillRect(0, 35, w, 28);
+
+      // 高銳利度操場
+      ctx.fillStyle = '#a3a3a3';
+      ctx.beginPath();
+      ctx.roundRect(w * 0.25, 80, w * 0.5, 110, 50);
+      ctx.fill();
+      ctx.fillStyle = '#404040';
+      ctx.beginPath();
+      ctx.roundRect(w * 0.31, 98, w * 0.38, 74, 32);
+      ctx.fill();
+
+      drawHighResDetails(ctx, w, h, '#ffffff');
+      ctx.restore();
+
+      // 分割線與把手
+      ctx.strokeStyle = '#00d2ff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(splitX, 0);
+      ctx.lineTo(splitX, h);
+      ctx.stroke();
+
+      ctx.fillStyle = '#00d2ff';
+      ctx.beginPath();
+      ctx.arc(splitX, h / 2, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#0b0e14';
+      ctx.font = 'bold 11px monospace';
+      ctx.fillText('↔', splitX - 6, h / 2 + 4);
+    }
+
+    function drawHighResDetails(ctx, w, h, detailColor) {
+      // 跑道精細分道線 (2m 解析度清晰可見)
+      ctx.strokeStyle = detailColor;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.roundRect(w * 0.28, 89, w * 0.44, 92, 40);
+      ctx.stroke();
+
+      // 足球場中線
+      ctx.beginPath();
+      ctx.moveTo(w * 0.5, 98);
+      ctx.lineTo(w * 0.5, 172);
+      ctx.stroke();
+
+      // 道路上的 2m 車輛與斑馬線
+      ctx.fillStyle = detailColor;
+      for (let x = 40; x < w - 40; x += 55) {
+        ctx.fillRect(x, 43, 14, 8);
+      }
+    }
+
+    /**
+     * ============================================================================
+     * 8. 模組 05：福衛七號 GNSS 無線電掩星折射模擬
+     * ============================================================================
+     */
+    let roBeamProgress = 1;
+
+    function updateMod4Preview() {
+      const d = Number(document.getElementById('roDensitySlider').value);
+      document.getElementById('roDensityLabel').textContent = `大氣水氣密度 (${d}%)`;
+      drawMod4Canvas();
+    }
+
+    function fireROBeam() {
+      playSound('beep');
+      roBeamProgress = 0;
+      const d = Number(document.getElementById('roDensitySlider').value);
+      const bend = (0.45 + d * 0.022).toFixed(2);
+      document.getElementById('roBendVal').textContent = `${bend}° (水氣折射偏折)`;
+      document.getElementById('roHumidVal').textContent = `反演完成：水氣 ${d}% / 對流層頂 -62°C`;
+      markModulePassed(4);
+
+      function step() {
+        roBeamProgress += 0.04;
+        drawMod4Canvas();
+        if (roBeamProgress < 1) requestAnimationFrame(step);
+      }
+      step();
+    }
+
+    function drawMod4Canvas() {
+      const canvas = document.getElementById('canvasMod4');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.clientWidth || 600;
+      canvas.height = canvas.clientHeight || 260;
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const density = Number(document.getElementById('roDensitySlider').value);
+
+      // 繪製下方地球與大氣層
+      const earthX = w * 0.42, earthY = h + 150;
+      // 電離層與對流層光暈
+      const atmGrad = ctx.createRadialGradient(earthX, earthY, 175, earthX, earthY, 275);
+      atmGrad.addColorStop(0, '#0284c7');
+      atmGrad.addColorStop(0.5, `rgba(0, 210, 255, ${0.15 + density * 0.003})`);
+      atmGrad.addColorStop(1, 'rgba(0, 210, 255, 0)');
+      ctx.fillStyle = atmGrad;
+      ctx.beginPath();
+      ctx.arc(earthX, earthY, 275, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 地球實體
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(earthX, earthY, 180, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // 左側高軌 GPS 衛星
+      ctx.fillStyle = '#ffb703';
+      ctx.fillRect(35, 55, 22, 14);
+      ctx.font = 'bold 11px "JetBrains Mono"';
+      ctx.fillText('🛰️ GNSS/GPS', 20, 45);
+
+      // 右側福衛七號 (FORMOSAT-7 + TGRS X)
+      const f7X = w * 0.72, f7Y = 125 + density * 0.35;
+      ctx.fillStyle = '#00d2ff';
+      ctx.fillRect(f7X, f7Y, 26, 18);
+      ctx.fillText('🛰️ FORMOSAT-7 [TGRS X]', f7X - 45, f7Y - 10);
+
+      // 繪製未折射虛線 vs 穿透大氣折射光束
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(57, 62);
+      ctx.lineTo(f7X, 55);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // 折射電波路徑
+      ctx.strokeStyle = '#ffb703';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(57, 62);
+      const midX = earthX, midY = h - 75;
+      ctx.lineTo(midX, midY);
+      if (roBeamProgress > 0.5) {
+        ctx.lineTo(f7X, f7Y + 8);
+      }
+      ctx.stroke();
+
+      // 右側大氣溫濕度垂直剖面小圖表
+      const boxX = w - 135, boxY = 18, boxW = 120, boxH = h - 36;
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.fillRect(boxX, boxY, boxW, boxH);
+      ctx.strokeRect(boxX, boxY, boxW, boxH);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '10px "JetBrains Mono"';
+      ctx.fillText('TEMP/HUMID PROFILE', boxX + 8, boxY + 15);
+
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(boxX + 25, boxY + 30);
+      ctx.bezierCurveTo(boxX + 95, boxY + 80, boxX + 20 + density * 0.5, boxY + 140, boxX + 85, boxY + boxH - 15);
+      ctx.stroke();
+    }
+
+    /**
+     * ============================================================================
+     * 9. 模組 06：地面站過境 10 分鐘窗口 (S-Band vs X-Band)
+     * ============================================================================
+     */
+    let activeBand = 'NONE';
+    let sProgress = 0;
+    let xProgress = 0;
+    let passSecLeft = 600;
+
+    function switchCommBand(band) {
+      playSound('beep');
+      if (band === 'X' && sProgress < 100) {
+        document.getElementById('commBandBadge').textContent = '⚠️ 請先用 S-Band 完成指令與遙傳鎖定！';
+        document.getElementById('commBandBadge').className = 'text-rose-400 font-bold';
+        return;
+      }
+      activeBand = band;
+      document.getElementById('commBandBadge').textContent = band === 'S' ? 'S-BAND [代碼 K] TT&C 連線中' : 'X-BAND [代碼 R] 高速影像下傳中';
+      document.getElementById('commBandBadge').className = band === 'S' ? 'text-cyan-300 font-bold' : 'text-amber-300 font-bold';
+    }
+
+    function resetMod5() {
+      activeBand = 'NONE';
+      sProgress = 0;
+      xProgress = 0;
+      passSecLeft = 600;
+      document.getElementById('sBandBar').style.width = '0%';
+      document.getElementById('xBandBar').style.width = '0%';
+      document.getElementById('sBandPct').textContent = '0%';
+      document.getElementById('xBandPct').textContent = '0%';
+      document.getElementById('commBandBadge').textContent = 'STANDBY';
+    }
+
+    function animateMod5Canvas() {
+      const canvas = document.getElementById('canvasMod5');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.clientWidth || 600;
+      canvas.height = canvas.clientHeight || 240;
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      if (activeMod === 5) {
+        if (passSecLeft > 0) passSecLeft -= 0.25;
+        const m = String(Math.floor(passSecLeft / 60)).padStart(2, '0');
+        const s = String(Math.floor(passSecLeft % 60)).padStart(2, '0');
+        document.getElementById('commTimerText').textContent = `${m}:${s}`;
+
+        if (activeBand === 'S' && sProgress < 100) {
+          sProgress = Math.min(100, sProgress + 1.2);
+          document.getElementById('sBandBar').style.width = `${sProgress}%`;
+          document.getElementById('sBandPct').textContent = `${Math.round(sProgress)}%`;
+        } else if (activeBand === 'X' && sProgress >= 100 && xProgress < 100) {
+          xProgress = Math.min(100, xProgress + 1.5);
+          document.getElementById('xBandBar').style.width = `${xProgress}%`;
+          document.getElementById('xBandPct').textContent = `${Math.round(xProgress)}%`;
+          if (xProgress >= 100) {
+            markModulePassed(5);
+          }
+        }
+      }
+
+      // 繪製衛星飛越弧線與台灣地面站碟型天線
+      const satX = w * 0.2 + ((600 - passSecLeft) / 600) * (w * 0.6);
+      const satY = 55 + Math.pow((satX - w / 2) / (w * 0.35), 2) * 45;
+
+      // 地面站大耳朵天線
+      const gsX = w / 2, gsY = h - 25;
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(gsX, gsY - 12, 18, 0, Math.PI, true);
+      ctx.fill();
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 11px "JetBrains Mono"';
+      ctx.fillText('📡 TASA GROUND STATION (Taiwan)', gsX - 95, h - 6);
+
+      // 繪製 S-Band 寬波束或 X-Band 高速窄波束
+      if (activeBand === 'S') {
+        ctx.fillStyle = 'rgba(0, 210, 255, 0.18)';
+        ctx.beginPath();
+        ctx.moveTo(satX, satY);
+        ctx.lineTo(gsX - 65, gsY - 15);
+        ctx.lineTo(gsX + 65, gsY - 15);
+        ctx.closePath();
+        ctx.fill();
+      } else if (activeBand === 'X') {
+        ctx.strokeStyle = '#ffb703';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.moveTo(satX, satY);
+        ctx.lineTo(gsX, gsY - 15);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // 衛星圖示
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(satX - 12, satY - 8, 24, 16);
+      ctx.fillStyle = '#00d2ff';
+      ctx.fillRect(satX - 32, satY - 4, 18, 8);
+      ctx.fillRect(satX + 14, satY - 4, 18, 8);
+
+      requestAnimationFrame(animateMod5Canvas);
+    }
+
+    // 初始化啟動
+    window.addEventListener('DOMContentLoaded', () => {
+      switchModule(0);
+      updateMod0();
+      selectITChamber(0);
+      updateMod2();
+      animateMod0Canvas();
+      animateMod5Canvas();
+      window.addEventListener('resize', () => {
+        if (activeMod === 3) drawMod3Canvas();
+        if (activeMod === 4) drawMod4Canvas();
+      });
+    });
+  </script>
+</body>
+</html>
