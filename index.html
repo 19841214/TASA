@@ -575,7 +575,7 @@
 
       <!-- 1. 職場英文關鍵術語發音卡 (點擊真人發音) -->
       <section class="hud-amber rounded-2xl p-4 sm:p-5 space-y-3.5">
-        <div class="flex items-center justify-between border-b border-amber-500/25 pb-2.5">
+        <div class="flex items-center justify-between border-b border-amber-500/25 pb-2.5 gap-2">
           <div>
             <span class="text-[11px] font-mono-tech uppercase tracking-wider text-amber-300">
               AEROSPACE WORKPLACE ENGLISH (ESP)
@@ -584,9 +584,9 @@
               🎧 國際航太工程師必備術語卡（點擊真人發音）
             </h3>
           </div>
-          <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 font-mono-tech border border-amber-400/30">
-            TTS 語音引擎
-          </span>
+          <button onclick="speakEnglish('Welcome to Taiwan Space Agency! Let us learn aerospace workplace English!')" id="ttsStatusBadge" class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-mono-tech border border-amber-400/40 shrink-0 transition cursor-pointer">
+            🔊 點此測試發音
+          </button>
         </div>
 
         <p class="text-xs text-slate-300">
@@ -721,14 +721,135 @@
       } catch (e) {}
     }
 
+    // 全域保存語音實例，防止瀏覽器 Garbage Collection 回收導致無聲
+    window.__activeUtterance = null;
+    window.__fallbackAudio = null;
+    let cachedEnglishVoice = null;
+    let ttsTimer = null;
+
+    function loadPreferredEnglishVoice() {
+      if (!('speechSynthesis' in window)) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      if (!voices.length) return null;
+      cachedEnglishVoice =
+        voices.find(v => /en[-_]US/i.test(v.lang) && /(Google|Natural|Samantha|Siri|Microsoft|Aria|Guy|Zira)/i.test(v.name)) ||
+        voices.find(v => /en[-_]US/i.test(v.lang)) ||
+        voices.find(v => /^en/i.test(v.lang)) ||
+        null;
+      return cachedEnglishVoice;
+    }
+
+    if ('speechSynthesis' in window) {
+      loadPreferredEnglishVoice();
+      if (typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
+        window.speechSynthesis.onvoiceschanged = loadPreferredEnglishVoice;
+      }
+    }
+
+    function updateTTSBadge(statusText, isSpeaking) {
+      const badge = document.getElementById('ttsStatusBadge');
+      if (!badge) return;
+      badge.textContent = statusText;
+      badge.className = isSpeaking
+        ? 'text-xs px-2.5 py-1 rounded-lg bg-emerald-500/25 text-emerald-300 font-mono-tech border border-emerald-400 shrink-0 transition animate-pulse'
+        : 'text-xs px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-mono-tech border border-amber-400/40 shrink-0 transition cursor-pointer';
+    }
+
+    // 雲端真人語音備援（當內嵌 iframe 或特定平板無內建英文字典時自動接手）
+    function playCloudFallbackTTS(cleanText) {
+      try {
+        if (window.__fallbackAudio) {
+          window.__fallbackAudio.pause();
+          window.__fallbackAudio = null;
+        }
+        const url = 'https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=en-US&dt=t&q=' + encodeURIComponent(cleanText);
+        const audio = new Audio(url);
+        window.__fallbackAudio = audio;
+        updateTTSBadge('🔊 雲端語音朗讀中...', true);
+        audio.onended = () => updateTTSBadge('🔊 點此測試發音', false);
+        audio.onerror = () => updateTTSBadge('🔊 語音已就緒', false);
+        audio.play().catch(() => {
+          updateTTSBadge('🔊 語音已就緒', false);
+        });
+      } catch (e) {
+        updateTTSBadge('🔊 語音已就緒', false);
+      }
+    }
+
     function speakEnglish(text) {
       playSound('click');
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = 'en-US';
-        utter.rate = 0.92;
-        window.speechSynthesis.speak(utter);
+      if (!text) return;
+
+      // 過濾掉括號內的中文補充或特殊符號，讓英文發音更自然流暢
+      const cleanText = String(text)
+        .replace(/（[^）]*）/g, '')
+        .replace(/\([^\)]*[\u4e00-\u9fa5]+[^\)]*\)/g, '')
+        .replace(/&/g, ' and ')
+        .trim();
+
+      if (ttsTimer) clearTimeout(ttsTimer);
+      if (window.__fallbackAudio) {
+        try { window.__fallbackAudio.pause(); } catch (e) {}
+      }
+
+      if (!('speechSynthesis' in window)) {
+        playCloudFallbackTTS(cleanText);
+        return;
+      }
+
+      try {
+        const synth = window.speechSynthesis;
+        // 解決 Chrome/Safari 佇列卡死問題：先 cancel 再 resume，並延遲 60ms 啟動新語音
+        synth.cancel();
+        if (synth.paused) synth.resume();
+
+        const shortLabel = cleanText.length > 20 ? cleanText.slice(0, 18) + '...' : cleanText;
+        updateTTSBadge(`🔊 ${shortLabel}`, true);
+
+        ttsTimer = setTimeout(() => {
+          try {
+            if (synth.paused) synth.resume();
+            const utter = new SpeechSynthesisUtterance(cleanText);
+            window.__activeUtterance = utter; // 綁定全域避免被 GC 回收
+            utter.lang = 'en-US';
+            utter.rate = 0.92;
+            utter.pitch = 1.0;
+            utter.volume = 1.0;
+
+            const voice = cachedEnglishVoice || loadPreferredEnglishVoice();
+            if (voice) utter.voice = voice;
+
+            let started = false;
+            utter.onstart = () => {
+              started = true;
+            };
+            utter.onend = () => {
+              updateTTSBadge('🔊 點此測試發音', false);
+            };
+            utter.onerror = (err) => {
+              // 若原生語音因環境限制失敗，自動切換雲端真人發音備援
+              if (err && err.error !== 'canceled' && err.error !== 'interrupted') {
+                playCloudFallbackTTS(cleanText);
+              } else {
+                updateTTSBadge('🔊 點此測試發音', false);
+              }
+            };
+
+            synth.speak(utter);
+            if (synth.paused) synth.resume();
+
+            // 保險機制：若 600ms 後瀏覽器仍未啟動原生發音（例如無內建語音包），自動啟用雲端發音
+            setTimeout(() => {
+              if (!started && !synth.speaking) {
+                playCloudFallbackTTS(cleanText);
+              }
+            }, 600);
+          } catch (innerErr) {
+            playCloudFallbackTTS(cleanText);
+          }
+        }, 60);
+      } catch (e) {
+        playCloudFallbackTTS(cleanText);
       }
     }
 
